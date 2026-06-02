@@ -1,5 +1,5 @@
 import { externalSupabase } from "@/lib/external-supabase";
-import { calcEMI } from "./history";
+import { calcEMI, saveHistory } from "./history";
 import { calculateScore, type FormData, type ScoreResult } from "./scoring";
 
 export type SubmissionPayload = {
@@ -143,6 +143,11 @@ export async function submitApplication(d: FormData): Promise<SubmissionPayload>
   ]);
 
   if (error) throw error;
+
+  // Persist a local-only history record (DB rows are not readable by the client).
+  try { saveHistory(d); } catch { /* ignore localStorage errors */ }
+
+
 
   return {
     result,

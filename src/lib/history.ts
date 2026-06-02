@@ -1,7 +1,5 @@
 import type { FormData, ScoreResult } from "./scoring";
 import { calculateScore } from "./scoring";
-import { externalSupabase } from "@/lib/external-supabase";
-import type { Database } from "@/integrations/supabase/types";
 
 export type HistoryRecord = {
   id: string;
@@ -10,49 +8,46 @@ export type HistoryRecord = {
   result: ScoreResult;
 };
 
-type LoanApplicationRow = Database["public"]["Tables"]["loan_applications"]["Row"];
+const HISTORY_KEY = "vaultiq_history";
 
-function rowToHistory(row: LoanApplicationRow): HistoryRecord {
-  const data: FormData = {
-    fullName: row.full_name,
-    age: row.age ?? 30,
-    gender: (row.gender ?? "Male") as FormData["gender"],
-    marital: (row.marital_status ?? "Single") as FormData["marital"],
-    dependents: (row.dependents ?? "0") as FormData["dependents"],
-    education: (row.education ?? "Graduate") as FormData["education"],
-    employment: (row.employment_status ?? "Salaried") as FormData["employment"],
-    income: Number(row.monthly_income ?? 0),
-    coIncome: Number(row.coapplicant_income ?? 0),
-    emi: Number(row.existing_obligations ?? 0),
-    creditHistory: row.credit_history === "Poor" ? 0 : 1,
-    purpose: (row.loan_purpose ?? "Home") as FormData["purpose"],
-    loanAmount: Number(row.loan_amount ?? 0),
-    loanTerm: (row.loan_term ?? 24) as FormData["loanTerm"],
-    propertyArea: (row.property_area ?? "Urban") as FormData["propertyArea"],
-  };
+function readStore(): HistoryRecord[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as HistoryRecord[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
-  return {
-    id: row.id,
-    date: new Date(row.created_at).getTime(),
-    data,
-    result: calculateScore(data),
-  };
+function writeStore(records: HistoryRecord[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(records.slice(0, 50)));
 }
 
 export async function loadHistory(): Promise<HistoryRecord[]> {
-  const { data, error } = await externalSupabase
-    .from("loan_applications")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(50);
+  return readStore().sort((a, b) => b.date - a.date);
+}
 
-  if (error) throw error;
-  return (data ?? []).map(rowToHistory);
+export function saveHistory(data: FormData): HistoryRecord {
+  const record: HistoryRecord = {
+    id:
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `vq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    date: Date.now(),
+    data,
+    result: calculateScore(data),
+  };
+  const current = readStore();
+  writeStore([record, ...current]);
+  return record;
 }
 
 export async function deleteHistory(id: string) {
-  const { error } = await externalSupabase.from("loan_applications").delete().eq("id", id);
-  if (error) throw error;
+  writeStore(readStore().filter((r) => r.id !== id));
 }
 
 const PREFILL_KEY = "vaultiq_prefill";
