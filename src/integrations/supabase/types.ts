@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      loan_applications: {
+        Row: {
+          age: number | null
+          application_date: string | null
+          coapplicant_income: number | null
+          created_at: string
+          credit_history: string | null
+          decision: string | null
+          dependents: string | null
+          education: string | null
+          eligibility_score: number | null
+          employment_status: string | null
+          existing_obligations: number | null
+          financial_health_advice: Json | null
+          financial_health_badge: string | null
+          financial_health_score: number | null
+          first_name: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          interest_rate: number | null
+          loan_amount: number | null
+          loan_purpose: string | null
+          loan_term: number | null
+          marital_status: string | null
+          monthly_emi: number | null
+          monthly_income: number | null
+          property_area: string | null
+          recommendations: Json | null
+          reference_number: string
+          risk_category: string | null
+          total_interest: number | null
+          total_repayment: number | null
+        }
+        Insert: {
+          age?: number | null
+          application_date?: string | null
+          coapplicant_income?: number | null
+          created_at?: string
+          credit_history?: string | null
+          decision?: string | null
+          dependents?: string | null
+          education?: string | null
+          eligibility_score?: number | null
+          employment_status?: string | null
+          existing_obligations?: number | null
+          financial_health_advice?: Json | null
+          financial_health_badge?: string | null
+          financial_health_score?: number | null
+          first_name?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          interest_rate?: number | null
+          loan_amount?: number | null
+          loan_purpose?: string | null
+          loan_term?: number | null
+          marital_status?: string | null
+          monthly_emi?: number | null
+          monthly_income?: number | null
+          property_area?: string | null
+          recommendations?: Json | null
+          reference_number: string
+          risk_category?: string | null
+          total_interest?: number | null
+          total_repayment?: number | null
+        }
+        Update: {
+          age?: number | null
+          application_date?: string | null
+          coapplicant_income?: number | null
+          created_at?: string
+          credit_history?: string | null
+          decision?: string | null
+          dependents?: string | null
+          education?: string | null
+          eligibility_score?: number | null
+          employment_status?: string | null
+          existing_obligations?: number | null
+          financial_health_advice?: Json | null
+          financial_health_badge?: string | null
+          financial_health_score?: number | null
+          first_name?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          interest_rate?: number | null
+          loan_amount?: number | null
+          loan_purpose?: string | null
+          loan_term?: number | null
+          marital_status?: string | null
+          monthly_emi?: number | null
+          monthly_income?: number | null
+          property_area?: string | null
+          recommendations?: Json | null
+          reference_number?: string
+          risk_category?: string | null
+          total_interest?: number | null
+          total_repayment?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
