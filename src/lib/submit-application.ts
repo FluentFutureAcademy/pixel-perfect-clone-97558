@@ -1,5 +1,5 @@
 import { externalSupabase } from "@/lib/external-supabase";
-import { calcEMI } from "./history";
+import { calcEMI, saveHistory } from "./history";
 import { calculateScore, type FormData, type ScoreResult } from "./scoring";
 
 export type SubmissionPayload = {
