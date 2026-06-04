@@ -1,4 +1,4 @@
-import { externalSupabase } from "@/lib/external-supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { calcEMI, saveHistory } from "./history";
 import { calculateScore, type FormData, type ScoreResult } from "./scoring";
 
