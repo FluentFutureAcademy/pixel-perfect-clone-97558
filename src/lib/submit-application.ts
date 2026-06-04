@@ -1,4 +1,4 @@
-import { externalSupabase } from "@/lib/external-supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { calcEMI, saveHistory } from "./history";
 import { calculateScore, type FormData, type ScoreResult } from "./scoring";
 
@@ -101,7 +101,7 @@ export async function submitApplication(d: FormData): Promise<SubmissionPayload>
   const recommendations = buildRecommendations(result.decision);
   const financialHealth = buildFinancialHealth(d, result.decision);
 
-  const { error } = await externalSupabase.from("loan_applications").insert([
+  const { error } = await supabase.from("loan_applications").insert([
     {
       application_date: new Date().toLocaleDateString(),
       reference_number: referenceNumber,
